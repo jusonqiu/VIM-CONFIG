@@ -41,6 +41,10 @@ set mouse=a
 set selection=exclusive
 set selectmode=mouse,key
 
+""""""""""""""""""""code"""""""""""""""""""""""""
+set fencs=utf-8,gbk
+
+
 filetype on
 filetype plugin on
 filetype indent on
@@ -110,10 +114,10 @@ endif
 "	map <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>	
 
 "let g:miniBufExplMapWindowNavVim = 1
-let g:miniBufExplMapWindowNavArrows = 1
+"let g:miniBufExplMapWindowNavArrows = 1
 "let g:miniBufExplMapCTabSwitchBufs = 1
-let g:miniBufExplModSelTarget = 1 
-let g:miniBufExplVSplit = 20
+"let g:miniBufExplModSelTarget = 1 
+"let g:miniBufExplVSplit = 20
 
 imap <C-k> <Up>
 imap <C-j> <Down>
@@ -131,7 +135,9 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <F12> :NERDTreeToggle<CR>
 let g:NERDTreeWinSize = 20
+let NERDTreeIgnore=['\.o$', '\.a$','\.so$','\~$']
 """""""""""""""""""""Cursor line """""""""""""""""
+
 set cursorline
  "hi x235_Grey15 ctermfg=253 
 hi CursorLine  cterm=NONE ctermbg=235 ctermfg=NONE
