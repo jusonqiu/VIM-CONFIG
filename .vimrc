@@ -104,7 +104,7 @@ if has("cscope")
 	set csverb
 endif
 :set cscopequickfix=s-,c-,d-,i-,t-,e-
-"	map <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
+	map <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
 "	map <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
 "	map <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
 "	map <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
@@ -128,7 +128,9 @@ imap <C-i> <Esc>o
 nmap <C-CR> o<Esc>
 map <F11> :TlistToggle<CR>
 map <F10> :LookupFile<CR>
-imap <C-Enter> <Esc>o
+nmap b,p :bp<CR>
+nmap b,n :bn<CR>
+"imap <C-Enter> <Esc>o
 
 """""""""""""""""""""NERDTree"""""""""""""""""""""
 autocmd StdinReadPre * let s:std_in=1
@@ -166,7 +168,7 @@ noremap \sie oif (  ) {<CR>} else {<CR>}<Esc>kkf(la
 noremap \sf   ofor (  )<CR>{<CR>}<Esc>kkf(la
 
 inoremap unsi unsigned 
-inoremap #inc #include "
+inoremap #inc #include 
 inoremap puts puts("\n");<Esc>F\ha
 inoremap printf printf("\n");<Esc>F\ha
 let g:netrw_winsize = 30
@@ -181,4 +183,43 @@ command Sync :call SyncAllTags()
 
 command Vimrc edit ~\.vimrc
 
+
+func SetComment()
+    call setline(1,"/******************************************************************************")
+    call append(line("."),   "*   Copyright (C) ".strftime("%Y")." All rights reserved.")
+    call append(line(".")+1, "*   ")  
+    call append(line(".")+2, "*   File: ".expand("%:t")) 
+    call append(line(".")+3, "*   Author: Zhaosheng Qiu <juson163@yeah.net>")
+    call append(line(".")+4, "*   Time: ".strftime("%Y/%m/%d")) 
+    call append(line(".")+5, "*   Descriptions: ") 
+    call append(line(".")+6, "*")
+    call append(line(".")+7, "******************************************************************************/") 
+endfunc
+
+command SetC :call SetComment()
+
+func SetTitle()
+     call SetComment()
+     if expand("%:e") == 'hpp' 
+  call append(line(".")+8, "#ifndef _".toupper(expand("%:t:r"))."_H") 
+  call append(line(".")+9, "#define _".toupper(expand("%:t:r"))."_H")
+  call append(line(".")+10, "#ifdef __cplusplus")
+  call append(line(".")+11, "extern \"C\"")
+  call append(line(".")+12, "{")
+  call append(line(".")+13, "#endif")
+  call append(line(".")+14, "")
+  call append(line(".")+15, "#ifdef __cplusplus")
+  call append(line(".")+16, "}")
+  call append(line(".")+17, "#endif") 
+  call append(line(".")+18, "#endif //".toupper(expand("%:t:r"))."_H") 
+     elseif expand("%:e") == 'h' 
+  call append(line(".")+8, "#pragma once") 
+     elseif &filetype == 'c' 
+  call append(line(".")+8,"#include \"".expand("%:t:r").".h\"") 
+     elseif &filetype == 'cpp' 
+  call append(line(".")+8, "#include \"".expand("%:t:r").".h\"") 
+     endif
+endfunc
+
+command SetHeaderT :call SetTitle()
 
