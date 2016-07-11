@@ -1,18 +1,22 @@
-""""""""""""""""""""""""""""""""vunbke""""""""""""""""""""""""""""""
+" set the runtime path to include Vundle and initialize
+set nocompatible              " be iMproved, required
+filetype off                  " required
 
-set nocompatible
-syntax on
-filetype off
-"set rtp+=~/.vim/bundle/Vundle.vim/
-"call vundle#rc()
-"Bundle 'gmarik/Vundle.vim'
-"filetype plugin indent on
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-" """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'mileszs/ack.vim'
+
+call vundle#end()
 
 
+set shell=/bin/bash
 "﻿set nocompatible
-"syntax on                   " 自动语法高亮
+filetype plugin indent on
+syntax on                   " 自动语法高亮
 "colorscheme solarized        " 设定配色方案
 "colorscheme desert   "设定配色方案
 colorscheme molokai   "设定配色方案
@@ -90,34 +94,39 @@ set guicursor=n-v-c:ver20-Cursor/lCursor,ve:ver35-Cursor,o:hor20-Cursor,i-ci:ver
 
 set guifont=Courier\ 10\ Pitch\ 14
 
-if has("cscope")
-	set csto=0
-	set cst
-	set nocsverb
-	" add any database in current directory
-	if filereadable("cscope.out")
-		cs add cscope.out
-	" else add database pointed to by environment
-	elseif $CSCOPE_DB != ""
-		cs add $CSCOPE_DB
-	endif
-	set csverb
-endif
-:set cscopequickfix=s-,c-,d-,i-,t-,e-
-	map <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
-"	map <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
-"	map <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
-"	map <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
-"	map <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>	
-"	map <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
-"	map <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-"	map <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>	
 
-"let g:miniBufExplMapWindowNavVim = 1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" cscope setting
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("cscope")
+  set csprg=/usr/bin/cscope
+  set csto=1
+  set cst
+  set nocsverb
+  " add any database in current directory
+  if filereadable("cscope.out")
+      cs add cscope.out
+  endif
+  set csverb
+endif
+
+nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+
+"let g:miniBufExplMapWindowNavVim = 1if has("cscope")
 "let g:miniBufExplMapWindowNavArrows = 1
 "let g:miniBufExplMapCTabSwitchBufs = 1
 "let g:miniBufExplModSelTarget = 1 
 "let g:miniBufExplVSplit = 20
+
+
 
 imap <C-k> <Up>
 imap <C-j> <Down>
@@ -177,8 +186,9 @@ nmap <silent> <leader>fe :Sexplore!<cr>
 function SyncAllTags()
 	cs kill -1
     !~/.vim/bin/tags.sh
-"   cs add cscope.out 
+	cs add cscope.out
 endfunction
+
 command Sync :call SyncAllTags()
 
 command Vimrc edit ~\.vimrc
@@ -194,7 +204,7 @@ func SetComment()
     call append(line(".")+5, "*   Descriptions: ") 
     call append(line(".")+6, "*")
     call append(line(".")+7, "******************************************************************************/") 
-endfunc
+endfunction
 
 command SetC :call SetComment()
 
@@ -219,7 +229,85 @@ func SetTitle()
      elseif &filetype == 'cpp' 
   call append(line(".")+8, "#include \"".expand("%:t:r").".h\"") 
      endif
-endfunc
+endfunction
 
 command SetHeaderT :call SetTitle()
 
+
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+nmap <leader>T :GotoSymbol
+
+
+""YCM""
+
+let g:ycm_error_symbol = '>>'
+let g:ycm_warning_symbol = '>*'
+
+let g:ycm_global_ycm_extra_conf = '~/.vim/data/.ycm_extra_conf.py'
+" 开启vim时检查ycm_extra_conf文件的信息  
+let g:ycm_confirm_extra_conf=1
+let g:ycm_auto_trigger = 1
+"
+" " 开启基于tag的补全，可以在这之后添加需要的标签路径  
+let g:ycm_collect_identifiers_from_tags_files=1
+" "注释和字符串中的文字也会被收入补全
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
+" " 输入第2个字符开始补全
+let g:ycm_min_num_of_chars_for_completion=2
+" " 禁止缓存匹配项,每次都重新生成匹配项
+let g:ycm_cache_omnifunc=0
+" " 开启语义补全
+let g:ycm_seed_identifiers_with_syntax=1
+" "在注释输入中也能补全
+let g:ycm_complete_in_comments = 1
+" "在字符串输入中也能补全
+let g:ycm_complete_in_strings = 1
+" " 设置在下面几种格式的文件上屏蔽ycm
+"
+ let g:ycm_filetype_whitelist = { '*': 1 }
+"
+ ""let g:ycm_filetype_blacklist = {
+ ""      \ 'tagbar' : 1,
+ ""      \ 'qf' : 1,
+ ""      \ 'notes' : 1,
+ ""      \ 'markdown' : 1,
+ ""      \ 'unite' : 1,
+ ""      \ 'text' : 1,
+ ""      \ 'vimwiki' : 1,
+ ""      \ 'pandoc' : 1,
+ ""      \ 'infolog' : 1,
+ ""      \ 'mail' : 1
+ ""      \}
+"
+" <leader> = C-\
+nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nmap <F4> :YcmDiags<CR>
+nnoremap <F5> :YcmForceCompileAndDiagnostics<CR>
+nnoremap <leader>kk :echo "goto >>> \ngl: GoToDeclaration \ngf: GoToDefinition \ngg: GoToDefinitionElseDeclaration"<CR>
+
+
+"""""""""""" markdown """"""""""""""""
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_folding_style_pythonic = 1
+let g:vim_markdown_folding_level = 6
+let g:vim_markdown_no_default_key_mappings = 1
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_emphasis_multiline = 0
+set conceallevel=2
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_fenced_languages = ['csharp=cs']
+let g:vim_markdown_math = 1
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_toml_frontmatter = 1
+
+"" ge: open the link under the cursor in Vim for editing. Useful for relative markdown links. <Plug>Markdown_EditUrlUnderCursor
+"" The rules for the cursor position are the same as the gx command.
+"" ]]: go to next header. <Plug>Markdown_MoveToNextHeader
+"" [[: go to previous header. Contrast with ]c. <Plug>Markdown_MoveToPreviousHeader
+"" ][: go to next sibling header if any. <Plug>Markdown_MoveToNextSiblingHeader
+"" []: go to previous sibling header if any. <Plug>Markdown_MoveToPreviousSiblingHeader
+"" ]c: go to Current header. <Plug>Markdown_MoveToCurHeader
+"" ]u: go to parent header (Up). <Plug>Markdown_MoveToParentHeader

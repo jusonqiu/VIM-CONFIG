@@ -3,5 +3,5 @@ find . -name "*.h" -o -name "*.c" -o -name "*.cpp" -o -name "*.m" -o -name "*.mm
 ctags -RV --c++-kinds=+px --fields=+iaS --extra=+q -L /tmp/src.files
 rm -f /tmp/src.files
 echo "~done~"
-#cscope -Rbkq && echo "#2 done"
+cscope -Rbkq && echo "#2 done"
 

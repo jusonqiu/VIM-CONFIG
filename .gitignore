@@ -1,0 +1,4 @@
+build
+/doc/tags
+bundle
+.travis.yml
